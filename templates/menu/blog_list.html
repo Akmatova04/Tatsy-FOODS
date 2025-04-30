@@ -1,0 +1,68 @@
+{# menu/templates/menu/blog_list.html #}
+{% extends 'menu/base.html' %} {# Негизги шаблонду мурастоо #}
+{% load static %}
+{% load i18n %}
+
+{# ----- Барактын аталышы ----- #}
+{% block title %}{% translate "Блог" %}{% endblock title %} {# Көрүнүштөн келген page_title'ды же түз жазса болот #}
+
+{# ----- Бул баракта сайдбар жок экенин көрсөтүүчү блоктор ----- #}
+{% block main_wrapper_class %}no-sidebar{% endblock main_wrapper_class %}
+{% block sidebar %}{% endblock sidebar %} {# Сайдбар блогун бош калтыруу #}
+{% block content_class %}full-width{% endblock content_class %} {# Контентти толук туурага жаюу #}
+
+{# ----- Негизги контент блогу ----- #}
+{% block content %}
+    {# Барактын баш темасы #}
+    <h1>{% translate "Биздин Блог" %}</h1>
+
+    {# Эгер блог посттору бар болсо #}
+    {% if blog_posts %}
+        <div class="blog-grid" style="margin-top: 30px;">
+            {# Ар бир постту цикл менен чыгаруу #}
+            {% for post in blog_posts %}
+            <div class="blog-card">
+                {# Посттун сүрөтү (эгер бар болсо) #}
+                {% if post.image %}
+                <div class="blog-card-image">
+                    <a href="{{ post.get_absolute_url }}">
+                        <img src="{{ post.get_image_url }}" alt="{{ post.title }}">
+                    </a>
+                </div>
+                {% endif %}
+                {# Посттун мазмуну #}
+                <div class="blog-card-content">
+                    {# Аталышы #}
+                    <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                    {# Мета маалымат (дата, автор) #}
+                    <p class="blog-meta">
+                        <span style="margin-right: 15px;"><i class="far fa-calendar-alt" style="margin-right: 5px;"></i> {{ post.publish_date|date:"d F Y" }}</span>
+                        {% if post.author %}
+                        <span><i class="far fa-user" style="margin-right: 5px;"></i> {{ post.author.get_full_name|default:post.author.username }}</span>
+                        {% endif %}
+                    </p>
+                    {# Кыскача мазмуну (үзүндү) #}
+                    <div class="blog-excerpt">
+                        {# striptags коопсуздук үчүн керек, truncatewords_html HTML тегдерин сактайт #}
+                        {{ post.content|striptags|truncatewords_html:35 }} {# 35 сөз менен чектөө #}
+                    </div>
+                    {# "Толук окуу" кнопкасы #}
+                    <a href="{{ post.get_absolute_url }}" class="btn btn-secondary" style="text-transform: none; letter-spacing: 0;">{% translate "Толук окуу" %} →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {# Пагинация үчүн орун (кийин кошулат) #}
+        {# <div class="pagination"> ... </div> #}
+
+    {# Эгер блог посттору жок болсо #}
+    {% else %}
+        <div style="text-align: center; padding: 60px 20px;">
+            <i class="far fa-folder-open" style="font-size: 4em; color: var(--border-color); margin-bottom: 20px;"></i>
+            <p style="font-size: 1.1em;">{% translate "Азырынча бул жерде эч кандай жазуу жок." %}</p>
+            <p>{% translate "Жакында кызыктуу макалалар менен бөлүшөбүз!" %}</p>
+        </div>
+    {% endif %}
+
+{% endblock content %}

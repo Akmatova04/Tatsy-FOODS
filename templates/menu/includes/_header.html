@@ -1,0 +1,58 @@
+{# menu/templates/menu/includes/_header.html #}
+{% load static %}
+{% load i18n %}
+
+<header class="site-header">
+    <div class="container header-container">
+        <a href="{% url 'menu:home' %}" class="logo">TASTY FOODS</a>
+
+        <nav class="main-navigation">
+            <ul>
+                <li class="{% if active_nav == 'home' %}active-nav{% endif %}"><a href="{% url 'menu:home' %}">{% translate "Башкы бет" %}</a></li>
+                <li class="{% if active_nav == 'menu' %}active-nav{% endif %}"><a href="{% url 'menu:menu_list' %}">{% translate "Меню" %}</a></li>
+                <li class="{% if active_nav == 'order' %}active-nav{% endif %}">
+                    <a href="{% url 'menu:view_cart' %}">
+                        <i class="fas fa-shopping-cart"></i> {% translate "Корзина" %}
+                        {% if cart_item_count > 0 %}
+                            <span class="cart-badge" style="background-color: var(--secondary-color); color: var(--bg-dark); padding: 2px 6px; font-size: 0.7em; border-radius: 8px; margin-left: 5px; font-weight: bold;">
+                                {{ cart_item_count }}
+                            </span>
+                        {% else %}
+                            <span class="cart-badge" style="display: none; background-color: var(--secondary-color); color: var(--bg-dark); padding: 2px 6px; font-size: 0.7em; border-radius: 8px; margin-left: 5px; font-weight: bold;">0</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="{% if active_nav == 'blog' %}active-nav{% endif %}"><a href="{% url 'menu:blog_list' %}">{% translate "Блог" %}</a></li>
+                <li class="nav-item dropdown {% if active_nav == 'about' or active_nav == 'contact' %}active-nav{% endif %}">
+                    <a href="#" class="dropdown-toggle">{% translate "Барактар" %}</a>
+                    <ul class="dropdown-menu">
+                         <li><a href="{% url 'menu:about_us' %}">{% translate "Биз жөнүндө" %}</a></li>
+                         <li><a href="{% url 'menu:contact_us' %}">{% translate "Байланыш" %}</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="header-right">
+            
+            <a href="{% url 'menu:order_online' %}" class="btn btn-primary">{% translate "Онлайн заказ" %}</a>
+            <div class="auth-links">
+               {# ----- КОЛДОНУУЧУ КИРГЕНДЕ ----- #}
+               {% if user.is_authenticated %}
+                   <span style="margin-right: 10px;">{% blocktranslate with user_name=user.username %}Салам, {{ user_name }}!{% endblocktranslate %}</span>
+                   <a href="{% url 'menu:saved_foods' %}" title="{% translate 'Сакталгандар' %}"><i class="fas fa-bookmark"></i></a> |
+                   {# Профилге шилтеме #}
+                   <a href="{% url 'menu:profile' %}" title="{% translate 'Менин Профилим' %}"><i class="fas fa-user-circle"></i></a> | {# Же "Менин Аккаунтум" сайдбардагыдай #}
+                   <a href="{% url 'logout' %}">{% translate "Чыгуу" %}</a>
+               {# ----- КОЛДОНУУЧУ КИРЕ ЭЛЕК БОЛСО ----- #}
+               {% else %}
+                   <a href="{% url 'login' %}">{% translate "Кирүү" %}</a> /
+                   {# ----- КАТТАЛУУ ШИЛТЕМЕСИ УШУЛ ЖЕРДЕ ----- #}
+                   <a href="{% url 'menu:register' %}">{% translate "Катталуу" %}</a>
+                   {# ----------------------------------------- #}
+               {% endif %}
+           </div>
+        </div>
+         <button class="menu-toggle" aria-label="{% translate 'Менюну ачуу/жабуу' %}">☰</button>
+    </div>
+</header>

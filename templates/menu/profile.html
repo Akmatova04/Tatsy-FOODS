@@ -1,0 +1,41 @@
+{# menu/templates/menu/profile.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{# Аккаунт сайдбарын кошуу #}
+{% block sidebar %}
+    {% include 'menu/includes/_sidebar.html' %}
+{% endblock sidebar %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    <div class="profile-info" style="background-color: var(--bg-card); padding: 25px; border-radius: 8px;">
+        <h3>{% translate "Сиздин маалыматыңыз" %}</h3>
+        <p><strong>{% translate "Колдонуучу аты:" %}</strong> {{ user.username }}</p>
+        <p><strong>{% translate "Аты:" %}</strong> {{ user.first_name|default:"-" }}</p>
+        <p><strong>{% translate "Фамилиясы:" %}</strong> {{ user.last_name|default:"-" }}</p>
+        <p><strong>{% translate "Email:" %}</strong> {{ user.email|default:"-" }}</p>
+
+        {# Кийин бул жерге маалыматты өзгөртүү формасы кошулат #}
+         <hr style="border-color: var(--border-color); margin: 20px 0;">
+           <h3>{% translate "Профилди өзгөртүү" %}</h3>
+           <form method="post">
+               {% csrf_token %}
+               {{ user_form.as_p }} {# Же талаа боюнча чыгаруу #}
+               <button type="submit" class="btn">{% translate "Сактоо" %}</button>
+           </form>
+        
+
+        {# Сырсөздү өзгөртүү шилтемеси #}
+        <div style="margin-top: 30px;">
+            <a href="{% url 'password_change' %}" class="btn btn-secondary">
+                <i class="fas fa-key"></i> {% translate "Сырсөздү алмаштыруу" %}
+            </a>
+        </div>
+
+    </div>
+{% endblock content %}

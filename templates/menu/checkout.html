@@ -1,0 +1,124 @@
+{# menu/templates/menu/checkout.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% translate "Заказды тастыктоо" %}{% endblock %}
+{% block main_wrapper_class %}no-sidebar{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_class %}full-width{% endblock %}
+
+{% block content %}
+    <h1>{% translate "Заказды тастыктоо" %}</h1>
+
+    <div class="checkout-container" style="display: flex; flex-wrap: wrap; gap: 40px; margin-top: 30px;">
+
+        {# Сол тарап: Жеткирүү маалыматы формасы #}
+        <div class="checkout-form-section" style="flex: 2; min-width: 300px;">
+            <h2>{% translate "Жеткирүү маалыматы" %}</h2>
+            <form action="{% url 'menu:checkout' %}" method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-error">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                {# ... (Аты, Фамилиясы, Телефон, Email, Дарек, Шаар, Индекс талаалары) ... #}
+                <div class="form-row" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}*</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %} <div class="form-error">{{ form.first_name.errors|striptags }}</div> {% endif %}
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                         <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}*</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %} <div class="form-error">{{ form.last_name.errors|striptags }}</div> {% endif %}
+                    </div>
+                </div>
+                 <div class="form-row" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}*</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %} <div class="form-error">{{ form.phone.errors|striptags }}</div> {% endif %}
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                        {{ form.email }}
+                        {% if form.email.errors %} <div class="form-error">{{ form.email.errors|striptags }}</div> {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.address.id_for_label }}">{{ form.address.label }}*</label>
+                    {{ form.address }}
+                    {% if form.address.errors %} <div class="form-error">{{ form.address.errors|striptags }}</div> {% endif %}
+                </div>
+                 <div class="form-row" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="{{ form.city.id_for_label }}">{{ form.city.label }}*</label>
+                        {{ form.city }}
+                        {% if form.city.errors %} <div class="form-error">{{ form.city.errors|striptags }}</div> {% endif %}
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="{{ form.postal_code.id_for_label }}">{{ form.postal_code.label }}</label>
+                        {{ form.postal_code }}
+                        {% if form.postal_code.errors %} <div class="form-error">{{ form.postal_code.errors|striptags }}</div> {% endif %}
+                    </div>
+                </div>
+
+                {# ----- ТӨЛӨМ ЫКМАСЫН ТАНДОО ----- #}
+                <div class="form-group payment-methods" style="margin-top: 30px;">
+                    <h4>{% translate "Төлөм ыкмасы" %}</h4>
+                    <div style="padding: 15px; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 5px;">
+                        {# "Накталай акча" опциясы (демейки боюнча тандалган) #}
+                        <input type="radio" id="cash_on_delivery" name="payment_method" value="cash" checked style="margin-right: 8px; vertical-align: middle;">
+                        <label for="cash_on_delivery" style="vertical-align: middle;">
+                            <i class="fas fa-money-bill-wave" style="margin-right: 5px; color: var(--primary-color);"></i>
+                            {% translate "Накталай акча (курьерге)" %}
+                        </label>
+
+                    
+                        <div style="margin-top: 10px;">
+                            <input type="radio" id="online_payment" name="payment_method" value="online" style="margin-right: 8px;" disabled>
+                            <label for="online_payment" style="color: #777;">{% translate "Онлайн төлөм (азырынча жеткиликсиз)" %}</label>
+                        </div>
+                
+                    </div>
+                </div>
+                {# --------------------------------- #}
+
+                <p style="font-size: 0.9em; color: var(--text-secondary);">* {% translate "Милдеттүү талаалар" %}</p>
+
+                <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">
+                    <i class="fas fa-check-circle" style="margin-right: 8px;"></i> {% translate "Заказды Берүү" %}
+                </button>
+            </form>
+        </div>
+
+        {# Оң тарап: Корзинанын кыскача мазмуну (өзгөрүүсүз) #}
+        <div class="checkout-summary-section" style="flex: 1; min-width: 280px; background-color: var(--bg-card); padding: 30px; border-radius: 8px; height: fit-content;">
+            <h2>{% translate "Сиздин заказыңыз" %}</h2>
+            {% if cart_products %}
+                <ul style="list-style: none; padding: 0; margin: 20px 0;">
+                    {% for item in cart_products %}
+                    <li style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding: 12px 0; gap: 10px;">
+                        <img src="{{ item.product.get_image_url }}" alt="" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; flex-shrink: 0;">
+                        <span style="flex-grow: 1; font-size: 0.95em;">{{ item.quantity }} x {{ item.product.name }}</span>
+                        <span style="font-weight: bold; white-space: nowrap;">${{ item.total_price|floatformat:2 }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div style="border-top: 2px solid var(--primary-color); padding-top: 15px; margin-top: 15px; text-align: right;">
+                    <h4 style="margin: 0; font-size: 1.1em;">{% translate "Жалпы сумма:" %}
+                        <span style="color: var(--primary-color); font-size: 1.3em; font-weight: bold; margin-left: 10px;">${{ total_price|floatformat:2 }}</span>
+                    </h4>
+                </div>
+            {% else %}
+                 <p>{% translate "Корзинаңыз бош." %}</p>
+            {% endif %}
+             <p style="font-size: 0.85em; color: var(--text-secondary); margin-top: 25px; text-align: center;">
+                {% blocktranslate %} "Заказды Берүү" кнопкасын басуу менен, сиз биздин <a href="#" style="color: var(--primary-color);">Шарттар жана Эрежелер</a> менен макул болосуз.{% endblocktranslate %}
+             </p>
+        </div>
+
+    </div>
+{% endblock content %}

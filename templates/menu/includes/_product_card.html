@@ -1,0 +1,50 @@
+{# menu/templates/menu/includes/_product_card.html #}
+{% load static %}
+{% load i18n %}
+
+<div class="product-card">
+    <div class="product-image">
+         <a href="{{ product.get_absolute_url }}">
+             <img src="{{ product.get_image_url }}" alt="{{ product.name }}">
+         </a>
+        {% if product.discount_message %}
+            <span class="discount-badge">{{ product.discount_message }}</span>
+        {% elif product.has_discount %}
+            <span class="discount-badge">{{ product.discount_percentage }}% OFF</span>
+        {% endif %}
+
+         {# --- Сактоо/Өчүрүү кнопкасы --- #}
+         {% if user.is_authenticated %}
+             <button class="btn btn-save-toggle {% if product.is_saved_by_user %}saved{% endif %}"
+                     data-product-id="{{ product.pk }}"
+                     data-action="{% if product.is_saved_by_user %}unsave{% else %}save{% endif %}"
+                     title="{% if product.is_saved_by_user %}{% translate 'Сакталгандан өчүрүү' %}{% else %}{% translate 'Сактоо' %}{% endif %}">
+                 <i class="{% if product.is_saved_by_user %}fas{% else %}far{% endif %} fa-bookmark"></i>
+             </button>
+         {% else %}
+             <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-save-toggle" title="{% translate 'Сактоо үчүн кириңиз' %}">
+                  <i class="far fa-bookmark"></i>
+             </a>
+         {% endif %}
+    </div>
+    <div class="product-info">
+        <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+        <div class="rating">
+            {% with rating_full=product.rating|floatformat:0 %}
+                {% for i in "12345" %}
+                    {% if i <= rating_full %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}
+                {% endfor %}
+            {% endwith %}
+            <span>({{ product.rating|floatformat:1 }})</span>
+        </div>
+        <p class="price">{{ product.price|floatformat:2 }}  {% translate "сом" %}</p>
+
+        {# ----- "Буюртма берүү" ФОРМАСЫ ----- #}
+        <form action="{% url 'menu:add_to_cart' product.id %}" method="post" style="width: 100%; margin-top: auto;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-add-to-cart">{% translate "Буюртма берүү" %}</button>
+        </form>
+        {# ----------------------------------- #}
+
+    </div>
+</div>

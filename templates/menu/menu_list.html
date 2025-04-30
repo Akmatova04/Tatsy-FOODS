@@ -1,0 +1,39 @@
+{% extends 'menu/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block sidebar %}
+    {# Меню үчүн категориялар сайдбары #}
+    <aside class="sidebar">
+        <h3>Категориялар</h3>
+        <nav class="category-menu">
+            <ul>
+                <li class="{% if not current_category %}active{% endif %}">
+                    <a href="{% url 'menu:menu_list' %}">Баары</a>
+                </li>
+                {% for cat in categories %}
+                <li class="{% if current_category.slug == cat.slug %}active{% endif %}">
+                    <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </aside>
+     <style> .category-menu li.active a { color: var(--primary-color); font-weight: bold; } </style>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    <div class="product-grid">
+        {% if products %}
+            {% for product in products %}
+                {% include 'menu/includes/_product_card.html' with product=product user=request.user %}
+            {% endfor %}
+        {% else %}
+             <p>{% if current_category %} Бул категорияда {% else %} Азырынча {% endif %} товарлар жок.</p>
+        {% endif %}
+    </div>
+    {# Бул жерге пагинация кошсо болот #}
+{% endblock %}

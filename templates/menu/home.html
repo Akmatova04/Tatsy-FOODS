@@ -1,0 +1,85 @@
+{# menu/templates/menu/home.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block main_wrapper_class %}no-sidebar{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_class %}full-width{% endblock %}
+
+{% block content %}
+    <section class="hero-section" style="padding: 60px 0; background: #222; text-align: center; margin-bottom: 40px;">
+        <h1>{% translate "Tasty FOODS кош келиңиз!" %}</h1>
+        <p style="color: var(--text-secondary); font-size: 1.2em; margin-bottom: 20px;">{% translate "Эң даамдуу тамактар бизде!" %}</p>
+        <a href="{% url 'menu:menu_list' %}" class="btn btn-primary btn-lg">{% translate "Менюну көрүү" %}</a>
+    </section>
+
+    <section class="latest-products">
+        <h2 style="text-align: center; margin-bottom: 30px;">{% translate "Акыркы кошулгандар" %}</h2>
+        <div class="product-grid">
+            {% if latest_products %}
+                {% for product in latest_products %}
+                    {% include 'menu/includes/_product_card.html' with product=product user=request.user %}
+                {% endfor %}
+            {% else %}
+                <p>{% translate "Азырынча товарлар жок." %}</p>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ----- БАШКЫ БЕТТЕГИ ПИКИРЛЕР БӨЛҮМҮ ----- #}
+    {% if featured_reviews %}
+    <section class="testimonials" style="padding: 50px 0; background-color: var(--bg-card); margin-top: 60px;">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px;">{% translate "Кардарлардын Пикирлери" %}</h2>
+            <div class="testimonial-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                {% for review in featured_reviews %}
+                    <div class="testimonial-card" style="background-color: var(--bg-dark); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        {# Рейтинг (эгер бар болсо) #}
+                        {% if review.rating %}
+                        <div class="rating" style="margin-bottom: 10px; color: var(--secondary-color); font-size: 0.9em;">
+                            {% widthratio review.rating 1 5 as width_percent %} {# Рейтингди %ке айлантуу (CSS жылдыз үчүн) #}
+                             <span style="display: inline-block; position: relative;">
+                                <span style="color: #555;">★★★★★</span> {# Боз жылдыздар #}
+                                <span style="position: absolute; top: 0; left: 0; white-space: nowrap; overflow: hidden; width: {{ width_percent }}%; color: var(--secondary-color);">★★★★★</span> {# Сары жылдыздар (үстүндө) #}
+                             </span>
+                             {# Же жөнөкөй вариант:
+                             {% with rating_full=review.rating %}{% for i in "12345" %}{% if i <= rating_full %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star" style="color:#555;"></i>{% endif %}{% endfor %}{% endwith %}
+                             #}
+                        </div>
+                        {% endif %}
+                        {# Пикир тексти #}
+                        <blockquote style="border: none; padding: 0; margin: 0 0 15px 0;">
+                          <p style="font-style: italic; color: var(--text-light); margin: 0;">"{{ review.text|linebreaksbr }}"</p>
+                        </blockquote>
+                        {# Автор #}
+                        <p style="text-align: right; font-weight: bold; color: var(--text-secondary); margin: 0;">- {{ review.get_author_name }}
+                         {# Эгер товарга пикир болсо, товардын атын кошсо болот #}
+                         {% if review.product %} <br><small>({{ review.product.name }})</small> {% endif %}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+            {# Эгер өзүнчө пикирлер барагы болсо: #}
+            {# <div style="text-align: center; margin-top: 40px;"> #}
+            {#    <a href="{% url 'menu:testimonial_list' %}" class="btn">{% translate "Баардык пикирлер" %}</a> #}
+            {# </div> #}
+        </div>
+    </section>
+    {% endif %}
+    {# --------------------------------------------- #}
+
+
+    {% if latest_blog %}
+    <section class="latest-blog-post" style="margin-top: 50px; padding: 30px; background-color: var(--bg-card); border-radius: 8px;">
+        <h2 style="text-align: center; margin-bottom: 20px;">{% translate "Акыркы блог жазуу" %}</h2>
+        <h3><a href="{{ latest_blog.get_absolute_url }}">{{ latest_blog.title }}</a></h3>
+        <p style="color: var(--text-secondary); font-size: 0.9em;">{% translate "Жарыяланды:" %} {{ latest_blog.publish_date|date:"d F Y" }} {% if latest_blog.author %} | {% translate "Автор:" %} {{ latest_blog.author.get_full_name|default:latest_blog.author.username }} {% endif %}</p>
+        <p>{{ latest_blog.content|striptags|truncatewords_html:40 }}</p>
+        <a href="{{ latest_blog.get_absolute_url }}" class="btn" style="margin-top: 15px;">{% translate "Толук окуу" %}</a>
+    </section>
+    {% endif %}
+
+{% endblock %}

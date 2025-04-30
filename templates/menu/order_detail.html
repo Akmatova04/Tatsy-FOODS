@@ -1,0 +1,119 @@
+{# menu/templates/menu/order_detail.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load l10n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block sidebar %}
+    {% include 'menu/includes/_sidebar.html' %}
+{% endblock sidebar %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    <div class="order-detail-container" style="margin-top: 20px;">
+        <div class="order-summary" style="background-color: var(--bg-card); padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+            <h3>{% translate "Заказ боюнча маалымат" %}</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div>
+                    <strong>{% translate "Заказ №" %}:</strong> #{{ order.id }}<br>
+                    <strong>{% translate "Датасы" %}:</strong> {{ order.created_at|date:"d F Y, H:i" }}<br>
+                    <strong>{% translate "Статус" %}:</strong>
+                    <span class="status-badge status-{{ order.status|lower }}"
+                          style="padding: 3px 6px; border-radius: 4px; font-size: 0.8em; font-weight: 500; color: #fff;">
+                        {{ order.get_status_display }}
+                    </span><br>
+                    <strong>{% translate "Жалпы сумма" %}:</strong> {{ order.get_total_cost|floatformat:2 }}  {% translate "сом" %}
+                </div>
+                <div>
+                    <strong>{% translate "Жеткирүү дареги" %}:</strong><br>
+                    {{ order.first_name }} {{ order.last_name }}<br>
+                    {{ order.address }}<br>
+                    {{ order.city }}{% if order.postal_code %}, {{ order.postal_code }}{% endif %}<br>
+                    {% translate "Телефон:" %} {{ order.phone }}<br>
+                    {% if order.email %}{% translate "Email:" %} {{ order.email }}{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <h3>{% translate "Заказдын курамы" %}</h3>
+        <div style="overflow-x: auto;"> {# Горизонталдуу сыдыруу үчүн #}
+            <table class="order-items-table" style="width: 100%; min-width: 500px; border-collapse: collapse; margin-top: 15px;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th style="text-align: left; padding: 10px 5px; width: 10%;">{% translate "Сүрөт" %}</th>
+                        <th style="text-align: left; padding: 10px 5px;">{% translate "Товар" %}</th>
+                        <th style="text-align: right; padding: 10px 5px; width: 15%;">{% translate "Баасы" %}</th>
+                        <th style="text-align: center; padding: 10px 5px; width: 10%;">{% translate "Саны" %}</th>
+                        <th style="text-align: right; padding: 10px 5px; width: 15%;">{% translate "Жалпы" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px 5px;">
+                            {% if item.product.get_image_url %}
+                            <img src="{{ item.product.get_image_url }}" alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                            {% endif %}
+                        </td>
+                        <td style="padding: 10px 5px;">
+                            {% if item.product %}
+                                <a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
+                            {% else %}
+                                {% translate "Товар өчүрүлгөн" %}
+                            {% endif %}
+                        </td>
+                        <td style="text-align: right; padding: 10px 5px;">${{ item.price|floatformat:2 }}</td>
+                        <td style="text-align: center; padding: 10px 5px;">{{ item.quantity }}</td>
+                        <td style="text-align: right; padding: 10px 5px; font-weight: bold;">${{ item.get_cost|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="{% url 'menu:my_orders' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> {% translate "Менин заказдарым" %}
+            </a>
+        </div>
+
+    </div>
+    <section class="testimonials" style="padding: 50px 0; background-color: var(--bg-card); margin-top: 50px;">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px;">{% translate "Кардарлардын Пикирлери" %}</h2>
+            <div class="testimonial-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                {% for review in featured_reviews %}
+                    <div class="testimonial-card" style="background-color: var(--bg-dark); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        {% if review.rating %}
+                        <div class="rating" style="margin-bottom: 10px; color: var(--secondary-color);">
+                            {% with rating_full=review.rating %}
+                                {% for i in "12345" %}{% if i <= rating_full %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star" style="color:#555;"></i>{% endif %}{% endfor %}
+                            {% endwith %}
+                        </div>
+                        {% endif %}
+                        <p style="font-style: italic; margin-bottom: 15px;">"{{ review.text|linebreaksbr }}"</p>
+                        <p style="text-align: right; font-weight: bold; color: var(--text-light);">- {{ review.get_author_name }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            {# <div style="text-align: center; margin-top: 30px;"> #}
+            {#    <a href="{% url 'menu:testimonial_list' %}" class="btn">{% translate "Баардык пикирлер" %}</a> #}
+            {# </div> #}
+        </div>
+    </section>
+
+{% endblock content %}
+
+{% block extra_head %}
+<style>
+    .status-badge { background-color: #777; display: inline-block; }
+    .status-pending { background-color: #f39c12; }
+    .status-processing { background-color: var(--info-color); }
+    .status-shipped { background-color: #8e44ad; }
+    .status-delivered { background-color: var(--success-color); }
+    .status-cancelled { background-color: var(--danger-color); }
+</style>
+{% endblock %}

@@ -1,0 +1,27 @@
+{# menu/templates/menu/includes/_sidebar.html #}
+{% load i18n %}
+<aside class="sidebar">
+    <h3>{% translate "Аккаунт" %}</h3>
+    <nav class="account-menu">
+        <ul>
+            {# ----- "Менин Аккаунтум" Профилге Багыттайт ----- #}
+            <li class="{% if active_nav == 'my_account' %}active{% endif %}">
+                <a href="{% url 'menu:profile' %}"><i class="fas fa-user-circle"></i> {% translate "Менин Профилим" %}</a> {# Текст өзгөрдү, URL өзгөрдү #}
+            </li>
+            {# ---------------------------------------------- #}
+            <li class="{% if active_nav == 'my_orders' %}active{% endif %}">
+                <a href="{% url 'menu:my_orders' %}"><i class="fas fa-clipboard-list"></i> {% translate "Менин Заказдарым" %}</a>
+            </li>
+            <li class="{% if active_nav == 'address' %}active{% endif %}">
+                <a href="{% url 'menu:address' %}"><i class="fas fa-map-marker-alt"></i> {% translate "Даректер" %}</a>
+            </li>
+            <li class="{% if active_nav == 'saved_foods' %}active{% endif %}">
+                <a href="{% url 'menu:saved_foods' %}"><i class="fas fa-bookmark"></i> {% translate "Сакталгандар" %}</a>
+            </li>
+            {# Сырсөздү өзгөртүү шилтемеси Django'нун даяр URL'ине багыттайт #}
+             <li class="{% if request.resolver_match.url_name == 'password_change' %}active{% endif %}">
+                <a href="{% url 'password_change' %}"><i class="fas fa-key"></i> {% translate "Сырсөздү алмаштыруу" %}</a>
+             </li>
+        </ul>
+    </nav>
+</aside>

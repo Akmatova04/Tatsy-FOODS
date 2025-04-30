@@ -1,0 +1,59 @@
+{% extends 'menu/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block main_wrapper_class %}no-sidebar{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_class %}full-width{% endblock %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 40px;">Суроолоруңуз же сунуштарыңыз болсо, биз менен байланышыңыз.</p>
+
+    <div class="contact-container">
+        <div class="contact-form-section">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {# Форманы талаа боюнча же as_p, as_ul, as_table менен чыгаруу #}
+                <div class="form-group">
+                     <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                    {{ form.name }}
+                    {% if form.name.errors %} <div class="form-error">{{ form.name.errors }}</div> {% endif %}
+                </div>
+                 <div class="form-group">
+                     <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    {{ form.email }}
+                    {% if form.email.errors %} <div class="form-error">{{ form.email.errors }}</div> {% endif %}
+                </div>
+                 <div class="form-group">
+                     <label for="{{ form.subject.id_for_label }}">{{ form.subject.label }}</label>
+                    {{ form.subject }}
+                     {% if form.subject.errors %} <div class="form-error">{{ form.subject.errors }}</div> {% endif %}
+                </div>
+                 <div class="form-group">
+                     <label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+                    {{ form.message }}
+                    {% if form.message.errors %} <div class="form-error">{{ form.message.errors }}</div> {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Жөнөтүү</button>
+            </form>
+        </div>
+        <div class="contact-info-section">
+            <h4>Биздин дарек</h4>
+            <p><i class="fas fa-map-marker-alt"></i> Баткен шаары Досбол көчөсү</p>
+            <h4>Телефон</h4>
+            <p><i class="fas fa-phone"></i> +996990686854</p>
+             <p><i class="fas fa-phone"></i> +996990686854</p>
+            <h4>Email</h4>
+            <p><i class="fas fa-envelope"></i>akmatova._.n</p>
+
+             <div class="social-icons" style="margin-top: 20px; justify-content: flex-start;">
+                <a href="https://www.instagram.com/akmatova._.n" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/+996990686854" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://t.me/@Акматова Назира" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

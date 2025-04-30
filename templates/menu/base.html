@@ -1,0 +1,88 @@
+{# menu/templates/menu/base.html #}
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE|default:"ky" }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasty FOODS - {% block title %}{% translate "Башкы барак" %}{% endblock title %}</title> {# title блогунун аягы #}
+    <link rel="stylesheet" href="{% static 'menu/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block extra_head %}{% endblock extra_head %} {# extra_head блогунун аягы #}
+    {# Messages үчүн стилдер #}
+    <style>
+        .messages { position: fixed; top: calc(var(--header-height) + 15px); left: 50%; transform: translateX(-50%); z-index: 1050; width: 90%; max-width: 600px; }
+        .alert { padding: 15px 20px; margin-bottom: 15px; border: 1px solid transparent; border-radius: 5px; position: relative; opacity: 0.97; box-shadow: 0 3px 8px rgba(0,0,0,0.2); font-size: 0.95em; display: flex; justify-content: space-between; align-items: center; }
+        .alert-success { color: #e6ffed; background-color: var(--success-color); border-color: #25a25a; }
+        .alert-info { color: #eaf5fc; background-color: var(--info-color); border-color: #2a80b9; }
+        .alert-warning { color: #1a1a1a; background-color: var(--secondary-color); border-color: #e9b914; }
+        .alert-error { color: #fdedee; background-color: var(--danger-color); border-color: #c0392b; }
+        .alert .close { font-size: 1.4rem; font-weight: bold; line-height: 1; color: inherit; opacity: 0.7; background: none; border: none; cursor: pointer; padding: 0 0 0 15px; }
+        .alert .close:hover { opacity: 1; }
+    </style>
+</head>
+<body> {# ----- BODY БАШТАЛДЫ ----- #}
+
+    {# Шапка #}
+    {% include 'menu/includes/_header.html' %}
+
+    {# Билдирүүлөр #}
+     {% if messages %}
+        <div class="messages container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                 {{ message }}
+                <button type="button" class="close" onclick="this.parentElement.style.display='none';" aria-label="{% translate 'Жабуу' %}">×</button>
+             </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {# Негизги Контент Аймагы #}
+    <div class="main-wrapper container {% block main_wrapper_class %}{% endblock main_wrapper_class %}">
+        {% block sidebar %}
+        {% endblock sidebar %}
+        <main class="content {% block content_class %}{% endblock content_class %}">
+            {% block content %}
+            {% endblock content %}
+        </main>
+    </div>
+
+    {# Футер #}
+    {% include 'menu/includes/_footer.html' %}
+
+    {# JavaScript Бөлүгү #}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    {# ----- БИР ГАНА extra_scripts БЛОГУ ----- #}
+    {% block extra_scripts %}{% endblock extra_scripts %}
+    {# --------------------------------------- #}
+
+    {# ----- JS ҮЧҮН ГЛОБАЛДЫК ӨЗГӨРМӨЛӨР ----- #}
+    <script>
+        window.csrfToken = "{{ csrf_token }}";
+        window.toggleSaveUrl = "{% url 'menu:toggle_save_food' %}";
+        window.updateCartUrl = "{% url 'menu:update_cart_item' %}";
+        window.removeFromCartUrl = "{% url 'menu:remove_from_cart' %}";
+        window.viewMenuUrl = "{% url 'menu:menu_list' %}";
+        window.jsTranslations = {
+            removeSaved: "{% translate 'Сакталгандан өчүрүү' %}",
+            save: "{% translate 'Сактоо' %}",
+            saved: "{% translate 'Сакталды' %}",
+            errorOccurred: "{% translate 'Ката кетти:' %}",
+            operationError: "{% translate 'Операцияны аткарууда ката кетти.' %}",
+            confirmRemoveItem: "{% translate 'Бул товарды корзинадан чын эле өчүрөсүзбү?' %}",
+            emptyCartTitle: "{% translate 'Сиздин корзинаңыз бош' %}",
+            emptyCartText: "{% translate 'Кызыктуу сунуштарды көрүү үчүн менюбузду карап чыгыңыз.' %}",
+            viewMenuBtn: "{% translate 'Менюну көрүү' %}",
+        };
+    </script>
+    {# --------------------------------------- #}
+
+    {# Негизги main.js файлын чакыруу #}
+    <script src="{% static 'menu/main.js' %}"></script>
+
+</body> {# ----- BODY АЯКТАДЫ ----- #}
+</html>

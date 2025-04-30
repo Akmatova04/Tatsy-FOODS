@@ -1,0 +1,58 @@
+{% load static %}
+{% load i18n %} {# Эл аралыкташтыруу тегдерин жүктөө #}
+
+ <footer class="site-footer">
+    <div class="container footer-container">
+        
+
+        <div class="footer-section quick-links">
+            
+            <h4>{% translate "Тез Шилтемелер" %}</h4>
+            <ul>
+               
+                <li><a href="{% url 'menu:about_us' %}">{% translate "Биз жөнүндө" %}</a></li>
+                <li><a href="{% url 'menu:menu_list' %}">{% translate "Меню" %}</a></li>
+                {# "Testimonial" үчүн кыргызча аталыш (мис: Пикирлер) #}
+                <li><a href="#">{% translate "Пикирлер" %}</a></li> {# Бул барак үчүн URL керек #}
+                <li><a href="{% url 'menu:blog_list' %}">{% translate "Блог" %}</a></li>
+                <li><a href="{% url 'menu:contact_us' %}">{% translate "Байланыш" %}</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section our-menu">
+            
+            <h4>{% translate "Биздин Меню" %}</h4>
+             <ul>
+               
+                <li><a href="#">{% translate "Бургерлер" %}</a></li> {# Бул шилтемелерди категория слагтарына багыттоо керек #}
+                <li><a href="#">{% translate "Десерттер" %}</a></li>
+                <li><a href="#">{% translate "Пицца" %}</a></li>
+                <li><a href="#">{% translate "Паста" %}</a></li>
+                <li><a href="#">{% translate "Муздак суусундуктар" %}</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section get-in-touch">
+             {# Баш тема которулду #}
+            <h4>{% translate "Байланышта Болуңуз" %}</h4>
+            {# Дарек/телефон/email өзгөрүүсүз калтырылды #}
+            <p><i class="fas fa-map-marker-alt"></i> Баткен шаары Досбол көчөсү</p>
+            <p><i class="fas fa-phone"></i> +996990686854</p>
+            <p><i class="fas fa-envelope"></i> akmatova1804@gmail.com</p>
+            <div class="social-icons">
+             
+                {# Instagram шилтемеси #}
+                <a href="https://www.instagram.com/akmatova._.n" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/+996990686854" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://t.me/@Акматова Назира" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                {# YouTube шилтемеси (эгер каналыңыз болсо) #}
+                <a href="https://www.youtube.com/channel/СИЗДИН_КАНАЛДЫН_ID" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+
+            </div>
+        </div>
+    </div>
+     <div class="footer-bottom">
+         {# Текст которулду #}
+        <p>© {% now "Y" %} Даамдуу бурч. {% translate "Бардык укуктар корголгон." %}</p>
+    </div>
+</footer>

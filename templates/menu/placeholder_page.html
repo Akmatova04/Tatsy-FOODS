@@ -1,0 +1,16 @@
+ {% extends 'menu/base.html' %}
+ {% load static %}
+
+ {% block title %}{{ page_title }}{% endblock %}
+
+ {% block sidebar %}
+     {% if active_nav in "my_account,my_orders,address" %}
+         {% include 'menu/includes/_sidebar.html' %}
+     {% endif %}
+ {% endblock %}
+
+ {% block content %}
+     <h1>{{ page_title }}</h1>
+     <p>Бул барак азырынча жасалууда.</p>
+     <p><a href="{% url 'menu:home' %}" class="btn">Башкы бетке кайтуу</a></p>
+ {% endblock %}

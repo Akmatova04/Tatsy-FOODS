@@ -1,0 +1,52 @@
+{# menu/templates/menu/order_complete.html #}
+{% extends 'menu/base.html' %} {# Негизги шаблонду БИР ЖОЛУ мурастоо #}
+{% load static %}
+{% load i18n %}
+
+{# ----- БИР ГАНА Title Блогу ----- #}
+{% block title %}{% translate "Заказ кабыл алынды" %}{% endblock title %}
+
+{# ----- Сайдбарды алып салуучу БИР ГАНА блоктор ----- #}
+{% block main_wrapper_class %}no-sidebar{% endblock main_wrapper_class %}
+{% block sidebar %}{% endblock sidebar %}
+{% block content_class %}full-width text-center{% endblock content_class %}
+
+{# ----- БИР ГАНА Content Блогу ----- #}
+{% block content %}
+    <div class="order-complete-message" style="padding: 60px 20px; text-align: center;">
+        {# Ийгилик иконкасы #}
+        <i class="fas fa-check-circle" style="font-size: 5em; color: var(--success-color); margin-bottom: 30px;"></i>
+
+        {# Баш тема #}
+        <h1>{% translate "Заказыңыз үчүн рахмат!" %}</h1>
+
+        {# Түшүндүрмө тексттер #}
+        <p style="font-size: 1.2em; color: var(--text-secondary); margin-bottom: 15px;">
+            {% translate "Сиздин заказыңыз ийгиликтүү кабыл алынды." %}
+        </p>
+        <p style="color: var(--text-secondary); margin-bottom: 40px;">
+            {% translate "Биз аны иштеп чыгууну баштадык жана жакынкы арада жеткирүү боюнча сиз менен байланышабыз." %}
+            {# Акыркы заказдын номерин көрсөтүү (эгер ID контекстте бар болсо) #}
+            {% if last_order_id %}
+            <br> {% blocktranslate %}Сиздин заказ номериңиз:{% endblocktranslate %} <strong>#{{ last_order_id }}</strong>
+            {% endif %}
+        </p>
+
+        {# Аракеттер/Кнопкалар #}
+        <div class="actions">
+            <a href="{% url 'menu:home' %}" class="btn btn-primary">{% translate "Башкы бетке кайтуу" %}</a>
+
+            {# ----- Акыркы Заказды Көрүү Шилтемеси (ОҢДОЛДУ) ----- #}
+            {# Эгер ID контекстте бар болсо гана көрсөтүү #}
+            {% if last_order_id %}
+                {# 'order.id' ордуна 'last_order_id' колдонулат #}
+                <a href="{% url 'menu:order_detail' last_order_id %}" class="btn btn-secondary" style="margin-left: 15px; font-size: 0.9em; padding: 10px 15px;"> {# Кичине стилин өзгөрттүк #}
+                    <i class="fas fa-eye" style="margin-right: 5px;"></i> {% translate "Заказды көрүү" %}
+                </a>
+            {% endif %}
+            {# ----------------------------------------- #}
+
+            {# Ашыкча </td> теги алынып салынды #}
+        </div>
+    </div>
+{% endblock content %}

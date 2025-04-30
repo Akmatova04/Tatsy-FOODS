@@ -1,0 +1,275 @@
+{# menu/templates/menu/cart.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load l10n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block main_wrapper_class %}no-sidebar{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_class %}full-width{% endblock %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    {# ----- Корзинанын негизги контейнери (JS аркылуу жаңыланат) ----- #}
+    <div id="cart-container-wrapper">
+
+        {% if cart_products %}
+            <div class="cart-container" style="margin-top: 30px;">
+                <div style="overflow-x: auto;">
+                    <table class="cart-table" style="width: 100%; min-width: 650px; border-collapse: collapse; margin-bottom: 30px;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-color);">
+                                <th style="text-align: left; padding: 10px 5px; width: 10%;">{% translate "Сүрөт" %}</th>
+                                <th style="text-align: left; padding: 10px 5px;">{% translate "Товар" %}</th>
+                                <th style="text-align: right; padding: 10px 5px; width: 15%;">{% translate "Баасы" %}</th>
+                                <th style="text-align: center; padding: 10px 5px; width: 15%;">{% translate "Саны" %}</th>
+                                <th style="text-align: right; padding: 10px 5px; width: 15%;">{% translate "Жалпы баасы" %}</th>
+                                <th style="width: 10%;">{% translate "Аракет" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_products %}
+                            {# ----- Ар бир катарга уникалдуу ID ----- #}
+                            <tr id="cart-item-row-{{ item.product.id }}" class="cart-item-row" style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 15px 5px;">
+                                    <a href="{{ item.product.get_absolute_url }}">
+                                        <img src="{{ item.product.get_image_url }}" alt="{{ item.product.name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                    </a>
+                                </td>
+                                <td style="padding: 15px 5px;">
+                                    <a href="{{ item.product.get_absolute_url }}" style="color: var(--text-light); font-weight: 500;">{{ item.product.name }}</a>
+                                </td>
+                                <td style="text-align: right; padding: 15px 5px;">${{ item.price|floatformat:2 }}</td>
+                                {# ----- Санды башкаруу (AJAX үчүн data-* атрибуттары) ----- #}
+                                <td style="text-align: center; padding: 15px 5px;">
+                                    <div class="quantity-control" style="display: flex; align-items: center; justify-content: center;">
+                                        <button class="btn-quantity-change" data-product-id="{{ item.product.id }}" data-action="update" data-change="-1" style="background: var(--border-color); border:none; color: white; padding: 3px 8px; cursor: pointer; border-radius: 3px;" title="{% translate 'Азайтуу' %}">-</button>
+                                        <span id="item-quantity-{{ item.product.id }}" style="padding: 0 10px; font-weight: bold; min-width: 20px; display: inline-block;">{{ item.quantity }}</span>
+                                        <button class="btn-quantity-change" data-product-id="{{ item.product.id }}" data-action="update" data-change="1" style="background: var(--border-color); border:none; color: white; padding: 3px 8px; cursor: pointer; border-radius: 3px;" title="{% translate 'Көбөйтүү' %}">+</button>
+                                    </div>
+                                </td>
+                                {# ----- Товардын жалпы баасы (ID менен) ----- #}
+                                <td id="item-total-price-{{ item.product.id }}" style="text-align: right; padding: 15px 5px; font-weight: bold;">${{ item.total_price|floatformat:2 }}</td>
+                                {# ----- Өчүрүү кнопкасы (data-* атрибуттары менен) ----- #}
+                                <td style="text-align: center; padding: 15px 5px;">
+                                    <button class="btn btn-remove-item btn-danger btn-sm" data-product-id="{{ item.product.id }}" data-action="remove" title="{% translate 'Корзинадан өчүрүү' %}" style="background-color: var(--danger-color); padding: 5px 10px; font-size: 0.8em;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {# ----- Жалпы сумма жана кнопкалар (Жалпы суммага ID) ----- #}
+                <div class="cart-summary" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; border-top: 2px solid var(--border-color); padding-top: 20px;">
+                    <div>
+                         <a href="{% url 'menu:menu_list' %}" class="btn btn-secondary">
+                           <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> {% translate "Сатып алууну улантуу" %}
+                         </a>
+                    </div>
+                    <div style="text-align: right;">
+                        <h3 style="margin-bottom: 15px;">{% translate "Жалпы сумма:" %}
+                            <span id="cart-total-price" style="color: var(--primary-color); font-size: 1.3em; margin-left: 10px;">{{ total_price|floatformat:2 }}  {% translate "сом" %}</span>
+                        </h3>
+                        <a href="{% url 'menu:checkout' %}" class="btn btn-primary btn-lg">
+                           <i class="fas fa-credit-card" style="margin-right: 8px;"></i> {% translate "Заказды тастыктоо" %}
+                        </a>
+                    </div>
+                </div>
+
+            </div> {# .cart-container аягы #}
+
+        {% else %}
+            {# ----- Корзина БОШ болсо (өзгөрүүсүз) ----- #}
+            <div class="cart-empty" style="text-align: center; padding: 80px 20px;">
+                 <i class="fas fa-shopping-cart" style="font-size: 6em; color: var(--border-color); margin-bottom: 30px;"></i>
+                 <h2>{% translate "Сиздин корзинаңыз бош" %}</h2>
+                 <p style="font-size: 1.1em; color: var(--text-secondary); margin-bottom: 30px;">
+                     {% translate "Кызыктуу сунуштарды көрүү үчүн менюбузду карап чыгыңыз." %}
+                 </p>
+                 <a href="{% url 'menu:menu_list' %}" class="btn btn-primary btn-lg">
+                     <i class="fas fa-utensils" style="margin-right: 8px;"></i> {% translate "Менюну көрүү" %}
+                 </a>
+            </div>
+        {% endif %}
+
+    </div> {# #cart-container-wrapper аягы #}
+
+{% endblock content %}
+
+{# ----- JavaScript кодун ушул жерге кошобуз ----- #}
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // CSRF токенин алуу функциясы (өзгөрүүсүз)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Жалпы сумма жана шапкадагы эсептегичти жаңыртчу функция
+    function updateCartTotals(totalPrice, itemCount) {
+        const totalPriceElement = document.getElementById('cart-total-price');
+        if (totalPriceElement) {
+            totalPriceElement.textContent = '$' + parseFloat(totalPrice).toFixed(2);
+        }
+        // Шапкадагы эсептегичти жаңыртуу (эгер ал бар болсо)
+        const cartBadge = document.querySelector('.cart-badge'); // Бул классты шапкадагы span'га кошуңуз
+        if (cartBadge) {
+            if (itemCount > 0) {
+                cartBadge.textContent = itemCount;
+                cartBadge.style.display = 'inline-block'; // Көрсөтүү
+            } else {
+                cartBadge.style.display = 'none'; // Жашыруу
+            }
+        }
+    }
+
+    // Корзина бош экенин көрсөтүүчү функция
+    function showEmptyCartMessage() {
+        const cartContainerWrapper = document.getElementById('cart-container-wrapper');
+        if (cartContainerWrapper) {
+            cartContainerWrapper.innerHTML = `
+                <div class="cart-empty" style="text-align: center; padding: 80px 20px;">
+                     <i class="fas fa-shopping-cart" style="font-size: 6em; color: var(--border-color); margin-bottom: 30px;"></i>
+                     <h2>{% translate "Сиздин корзинаңыз бош" %}</h2>
+                     <p style="font-size: 1.1em; color: var(--text-secondary); margin-bottom: 30px;">
+                         {% translate "Кызыктуу сунуштарды көрүү үчүн менюбузду карап чыгыңыз." %}
+                     </p>
+                     <a href="{% url 'menu:menu_list' %}" class="btn btn-primary btn-lg">
+                         <i class="fas fa-utensils" style="margin-right: 8px;"></i> {% translate "Менюну көрүү" %}
+                     </a>
+                </div>`;
+        }
+    }
+
+
+    // --- Санды өзгөртүүчү кнопкалар үчүн Event Listener ---
+    document.querySelectorAll('.btn-quantity-change').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            const change = this.dataset.change;
+            const url = "{% url 'menu:update_cart_item' %}"; // Туура URL
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({
+                    'product_id': productId,
+                    'change': change
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    // Тиешелүү элементтерди жаңыртуу
+                    const quantitySpan = document.getElementById(`item-quantity-${productId}`);
+                    const itemTotalPriceSpan = document.getElementById(`item-total-price-${productId}`);
+                    const itemRow = document.getElementById(`cart-item-row-${productId}`);
+
+                    if (data.item_removed) {
+                        // Эгер товар өчүрүлсө, катарды алып салуу
+                        if (itemRow) {
+                            itemRow.remove();
+                        }
+                    } else {
+                        // Эгер сан жаңыртылса
+                        if (quantitySpan) {
+                            quantitySpan.textContent = data.new_quantity;
+                        }
+                        if (itemTotalPriceSpan) {
+                            itemTotalPriceSpan.textContent = '$' + parseFloat(data.item_total_price).toFixed(2);
+                        }
+                    }
+                    // Жалпы сумманы жана шапкадагы санды жаңыртуу
+                    updateCartTotals(data.total_cart_price, data.cart_item_count);
+
+                    // Эгер корзина бош калса, билдирүүнү көрсөтүү
+                    if (data.cart_item_count === 0) {
+                        showEmptyCartMessage();
+                    }
+                } else {
+                    alert("{% translate 'Ката:' %} " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating cart:', error);
+                alert("{% translate 'Санды жаңыртууда ката кетти.' %}");
+            });
+        });
+    });
+
+    // --- Өчүрүү кнопкасы үчүн Event Listener ---
+    document.querySelectorAll('.btn-remove-item').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            const url = "{% url 'menu:remove_from_cart' %}"; // Туура URL
+
+            // Колдонуучудан ырастоо сураса болот
+            if (!confirm("{% translate 'Бул товарды корзинадан чын эле өчүрөсүзбү?' %}")) {
+                return; // Эгер "Cancel" басылса, токтотуу
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({
+                    'product_id': productId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    // Катарды алып салуу
+                    const itemRow = document.getElementById(`cart-item-row-${productId}`);
+                    if (itemRow) {
+                        itemRow.remove();
+                    }
+                    // Жалпы сумманы жана шапкадагы санды жаңыртуу
+                    updateCartTotals(data.total_cart_price, data.cart_item_count);
+
+                    // Эгер корзина бош калса, билдирүүнү көрсөтүү
+                    if (data.cart_is_empty) {
+                        showEmptyCartMessage();
+                    }
+                } else {
+                    alert("{% translate 'Ката:' %} " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error removing item:', error);
+                alert("{% translate 'Товарды өчүрүүдө ката кетти.' %}");
+            });
+        });
+    });
+
+});
+</script>
+{% endblock extra_scripts %}

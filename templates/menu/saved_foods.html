@@ -1,0 +1,24 @@
+{% extends 'menu/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block sidebar %}
+    {% include 'menu/includes/_sidebar.html' %} {# Аккаунт сайдбарын кошуу #}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    <div class="product-grid">
+        {% if saved_products %}
+            {% for product in saved_products %}
+                 {# Продукт картасын колдонуу #}
+                 {% include 'menu/includes/_product_card.html' with product=product user=request.user %}
+            {% endfor %}
+        {% else %}
+            <p>Сизде азырынча сакталган тамактар жок.</p>
+            <p><a href="{% url 'menu:menu_list' %}" class="btn">Менюну көрүү</a></p>
+        {% endif %}
+    </div>
+{% endblock %}

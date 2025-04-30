@@ -1,0 +1,51 @@
+{# menu/templates/menu/about.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %} {# Эл аралыкташтыруу үчүн #}
+
+{% block title %}{{ page_title }}{% endblock %} {# page_title views.py'да которулган #}
+
+{# Бул баракта сайдбар керек эмес деп коелу #}
+{% block main_wrapper_class %}no-sidebar{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_class %}full-width{% endblock %}
+
+{% block content %}
+    {# Барактын аталышын бул жерде да көрсөтсө болот #}
+    {# <h1>{{ page_title }}</h1> #}
+
+    {# "Биз жөнүндө" контенти #}
+    <section class="about-us-content" style="padding: 40px 0;">
+        <div style="text-align: center; margin-bottom: 40px;">
+             <i class="fas fa-utensils" style="font-size: 4em; color: var(--primary-color); margin-bottom: 20px;"></i>
+             <h1>{% translate "Tasty FOODS - Биз жөнүндө" %}</h1>
+             <p style="font-size: 1.2em; color: var(--text-secondary);">{% translate "Даамдуу тамактар жана мыкты тейлөө дүйнөсүнө кош келиңиз!" %}</p>
+        </div>
+
+        <div style="display: flex; gap: 30px; align-items: center; margin-bottom: 40px;">
+            <div style="flex: 1;">
+                <h2>{% translate "Биздин Окуя" %}</h2>
+                <p>{% blocktranslate %}Биздин Tasty FOODS рестораныбыз [Жыл] жылы жөнөкөй, бирок даамдуу тамак-ашка болгон сүйүү менен негизделген. Биз ар дайым эң жаңы жана сапаттуу ингредиенттерди колдонуп, ар бир кардарыбызга унутулгус тажрыйба тартуулоону максат кылабыз.{% endblocktranslate %}</p>
+                <p>{% translate "Биздин команда - өз ишинин чыныгы адистери. Ашпозчуларыбыз ар бир тамакты өзгөчө кылдаттык менен даярдашат, ал эми тейлөө кызматкерлерибиз сиздин ыңгайлуулугуңуз үчүн кам көрүшөт." %}</p>
+            </div>
+            <div style="flex: 1;">
+                {# Бул жерге команданын же ресторандын сүрөтүн койсо болот #}
+                <img src="{% static 'menu/images/about_placeholder.jpg' %}" alt="{% translate 'Биздин команда' %}" style="border-radius: 8px; width: 100%;">
+                 {# placeholder.png ордуна ылайыктуу сүрөт файлын menu/static/menu/images/ папкасына салыңыз #}
+            </div>
+        </div>
+
+         <div>
+            <h2>{% translate "Биздин Миссия" %}</h2>
+            <p>{% translate "Биздин миссия - шаарыбыздагы эң даамдуу жана жеткиликтүү тамак-аштарды сунуштоо менен бирге, ар бир конокко жылуу маанай жана жогорку деңгээлдеги тейлөө көрсөтүү." %}</p>
+             <ul>
+                 <li><i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 8px;"></i>{% translate "Жаңы жана сапаттуу азыктар" %}</li>
+                 <li><i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 8px;"></i>{% translate "Ар түрдүү меню" %}</li>
+                 <li><i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 8px;"></i>{% translate "Ыңгайлуу жана жагымдуу атмосфера" %}</li>
+                 <li><i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 8px;"></i>{% translate "Ыкчам жана сылык тейлөө" %}</li>
+             </ul>
+        </div>
+
+    </section>
+
+{% endblock content %}

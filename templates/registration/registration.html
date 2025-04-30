@@ -1,0 +1,62 @@
+{# templates/registration/register.html #}
+{% extends 'menu/base.html' %}
+{% load i18n %}
+
+{% block title %}{% translate "Каттоо" %}{% endblock %}
+
+{% block main_wrapper_class %}no-sidebar{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_class %}full-width{% endblock %}
+
+{% block content %}
+    <div class="auth-form-container" style="max-width: 500px; margin: 40px auto; padding: 30px; background-color: var(--bg-card); border-radius: 8px; box-shadow: var(--card-shadow);">
+        <h2>{% translate "Жаңы Аккаунт Түзүү" %}</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {# Жалпы форма каталары #}
+            {% if form.non_field_errors %}
+                <div class="alert alert-error" style="margin-bottom: 15px;">{{ form.non_field_errors|striptags }}</div>
+            {% endif %}
+
+            {# Форма талаалары #}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }} {# Талааны чыгаруу #}
+                    {# Жардамчы текст (мис., сырсөз талаптары) #}
+                    {% if field.help_text %}
+                        <small style="color: var(--text-secondary); display: block; margin-top: 5px;">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                    {# Талаа каталары #}
+                    {% for error in field.errors %}
+                        <div class="form-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">{% translate "Катталуу" %}</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px; font-size: 0.9em;">
+            {% translate "Аккаунтуңуз барбы?" %}
+            <a href="{% url 'login' %}" style="color: var(--primary-color); font-weight: 500;">{% translate "Кирүү" %}</a>
+        </p>
+    </div>
+
+    {# Форма талаалары үчүн кошумча стилдер (керек болсо) #}
+    <style>
+        .auth-form-container .form-group input {
+           /* UserCreationForm талаалары үчүн стилдерди туураласа болот */
+            padding: 10px 12px; /* Кичирээк padding */
+        }
+        .auth-form-container ul { /* Сырсөз жардамчы тексти үчүн */
+            list-style: disc;
+            margin-left: 20px;
+            margin-top: 5px;
+            font-size: 0.85em;
+        }
+    </style>
+
+{% endblock content %}

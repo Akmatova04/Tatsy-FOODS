@@ -1,0 +1,432 @@
+/* menu/static/menu/style.css */
+/* АКЫРКЫ ТОЛУК ВЕРСИЯ (object-fit: contain менен - СҮРӨТ ТОЛУК КӨРҮНӨТ) */
+
+/* ==================== Жалпы стилдер жана Өзгөрмөлөр ==================== */
+:root {
+    --bg-dark: #181818;
+    --bg-card: #242424;
+    --text-light: #f0f0f0;
+    --text-secondary: #a0a0a0;
+    --accent-green: #6ab04c;
+    --accent-yellow: #f9ca24;
+    --primary-color: var(--accent-green);
+    --secondary-color: var(--accent-yellow);
+    --border-color: #3a3a3a;
+    --danger-color: #e74c3c;
+    --success-color: #2ecc71;
+    --info-color: #3498db;
+    /* object-fit: contain үчүн фон */
+    --image-bg-color: #2e2e2e; /* Караңгы боз (же --bg-dark) */
+    --card-border-radius: 6px;
+    --card-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    --card-hover-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+
+    --container-width: 1200px;
+    --header-height: 70px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', 'Arial', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+ul {
+    list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.8em;
+    color: var(--text-light);
+    font-weight: 600;
+    line-height: 1.3;
+}
+h1 { font-size: 2.5em; margin-bottom: 0.6em;}
+h2 { font-size: 2em; }
+h3 { font-size: 1.5em; }
+h4 { font-size: 1.2em; }
+
+p {
+    margin-bottom: 1em;
+    color: var(--text-secondary);
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    font-weight: 500;
+    font-size: 0.95em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    background-color: #5a9a3c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.btn-primary {
+     background-color: var(--secondary-color);
+     color: var(--bg-dark);
+     font-weight: bold;
+}
+.btn-primary:hover {
+     background-color: #e9b914;
+}
+
+.btn-secondary {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+}
+.btn-secondary:hover {
+    background-color: #3a3a3a;
+    border-color: #555;
+}
+
+.btn-lg { padding: 15px 30px; font-size: 1.1em; }
+
+/* Форма элементтери */
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 7px; font-weight: 500; color: var(--text-light); font-size: 0.9em;}
+.form-control {
+    width: 100%; padding: 12px 15px; background-color: #333; border: 1px solid var(--border-color);
+    border-radius: 5px; color: var(--text-light); font-size: 1em; transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.form-control:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(106, 176, 76, 0.2); }
+.form-control::placeholder { color: #777; }
+textarea.form-control { resize: vertical; min-height: 100px; }
+.form-error { color: var(--danger-color); font-size: 0.85em; margin-top: 5px; }
+
+/* ==================== Шапка (Header) ==================== */
+.site-header {
+    background-color: var(--bg-card); padding: 0; border-bottom: 1px solid var(--border-color);
+    position: sticky; top: 0; left: 0; width: 100%; z-index: 1000; height: var(--header-height);
+}
+.header-container { display: flex; justify-content: space-between; align-items: center; height: 100%; }
+.logo { font-size: 1.9em; font-weight: 700; color: var(--secondary-color); text-transform: uppercase; letter-spacing: 1px; }
+.logo:hover { color: #fff; }
+.main-navigation ul { display: flex; gap: 30px; }
+.main-navigation a { font-weight: 500; padding: 10px 0; position: relative; text-transform: uppercase; font-size: 0.9em; letter-spacing: 0.5px; }
+.main-navigation a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px; background-color: var(--primary-color); transition: width 0.3s ease; }
+.main-navigation a:hover::after, .main-navigation li.active-nav > a::after { width: 100%; }
+.main-navigation li.active-nav > a { color: var(--primary-color); }
+.header-right { display: flex; align-items: center; gap: 25px; }
+.contact-number { font-size: 1em; color: var(--text-secondary); font-weight: 500; }
+.auth-links { font-size: 0.9em; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+.auth-links a { color: var(--text-secondary); transition: color 0.3s ease; }
+.auth-links a:hover { color: var(--text-light); }
+.auth-links i.fa-bookmark { font-size: 1.2em; color: var(--secondary-color); }
+.auth-links span { color: var(--text-light); }
+.menu-toggle { display: none; background: none; border: none; color: var(--text-light); font-size: 1.8em; cursor: pointer; padding: 5px; }
+/* Dropdown */
+.nav-item.dropdown { position: relative; }
+.dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: var(--bg-card); list-style: none; padding: 10px 0; margin: 0; min-width: 180px; z-index: 1001; border: 1px solid var(--border-color); border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.dropdown-menu li a { display: block; padding: 10px 20px; color: var(--text-secondary); white-space: nowrap; font-size: 0.9em; text-transform: none; }
+.dropdown-menu li a::after { display: none; }
+.dropdown-menu li a:hover { background-color: #3a3a3a; color: var(--text-light); }
+.nav-item.dropdown:hover > .dropdown-menu { display: block; }
+
+/* ==================== Негизги Бөлүк (Main Wrapper) ==================== */
+.main-wrapper { display: flex; gap: 30px; padding-top: 40px; padding-bottom: 60px; }
+.main-wrapper.no-sidebar { display: block; }
+
+/* ==================== Сайдбар (Sidebar) ==================== */
+.sidebar { width: 260px; flex-shrink: 0; background-color: var(--bg-card); padding: 25px; border-radius: 8px; height: fit-content; }
+.sidebar h3 { border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; font-size: 1.4em; color: var(--secondary-color); }
+.account-menu ul li a, .category-menu ul li a { display: block; padding: 12px 15px; margin-bottom: 8px; border-radius: 5px; transition: background-color 0.3s ease, color 0.3s ease, padding-left 0.3s ease; color: var(--text-secondary); font-weight: 500; }
+.account-menu ul li a i { margin-right: 12px; width: 20px; text-align: center; color: #888; transition: color 0.3s ease; }
+.account-menu ul li a:hover, .category-menu ul li a:hover { background-color: #3a3a3a; color: var(--text-light); padding-left: 20px; }
+.account-menu ul li a:hover i { color: var(--primary-color); }
+.account-menu ul li.active a, .category-menu ul li.active a { background-color: var(--primary-color); color: #fff; font-weight: bold; }
+.account-menu ul li.active a:hover { background-color: #5a9a3c; }
+.account-menu ul li.active a i { color: #fff; }
+.category-menu ul li.active a { background-color: transparent; color: var(--primary-color); font-weight: bold; padding-left: 15px; }
+
+/* ==================== Основная секция (Main Content) ==================== */
+.content { flex-grow: 1; min-width: 0; }
+.content.full-width { width: 100%; }
+.content > h1 { margin-bottom: 30px; font-size: 2.2em; text-align: center; color: var(--text-light); border-bottom: 2px solid var(--primary-color); display: inline-block; padding-bottom: 10px; position: relative; left: 50%; transform: translateX(-50%); }
+
+/* ==================== Товарлар сеткасы (Product Grid) - object-fit: contain МЕНЕН ==================== */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); /* 5 катарга ылайык */
+    gap: 25px;
+}
+
+/* --- Товар Карточкасы --- */
+.product-card {
+    background-color: var(--bg-card);
+    border-radius: var(--card-border-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+}
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
+}
+
+/* --- Сүрөт Контейнери (object-fit: contain үчүн оңдолду) --- */
+.product-card .product-image {
+    position: relative;
+    width: 100%;
+    /* Бийиктикти мурункудай калтырабыз (мис. 200px же 220px) */
+    /* Эгер карточка бийиктиги сүрөткө жараша өзгөрсүн десеңиз, height алып саласыз */
+    height: 200px;
+    overflow: hidden;
+    display: flex; /* Сүрөттү борборго жайгаштыруу */
+    align-items: center;
+    justify-content: center;
+    background-color: var(--image-bg-color); /* Фондун түсү */
+}
+
+/* --- Сүрөт Элементи (object-fit: contain менен) --- */
+.product-card .product-image img {
+    display: block;
+    max-width: 100%; /* Контейнердин туурасынан ашпайт */
+    max-height: 100%; /* Контейнердин бийиктигинен ашпайт */
+    object-fit: contain; /* <-- ТОЛУК КӨРҮНӨТ, ПРОПОРЦИЯ САКТАЛАТ */
+    /* Ховер эффектти өчүрөбүз */
+    transition: none;
+    transform: none;
+}
+.product-card:hover .product-image img {
+    transform: none; /* Ховерде эч нерсе болбойт */
+}
+
+/* Скидка жана Сактоо баскычы (өзгөрүүсүз) */
+.discount-badge {
+    position: absolute; top: 10px; left: 10px; background-color: var(--secondary-color); color: var(--bg-dark);
+    padding: 3px 8px; font-size: 0.8em; font-weight: bold; border-radius: 4px; z-index: 2;
+}
+.product-image .btn-save-toggle {
+    position: absolute; top: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.6); color: white;
+    border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 1rem; cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s; display: flex; align-items: center;
+    justify-content: center; padding: 0; z-index: 2;
+}
+.product-image .btn-save-toggle:hover { background-color: rgba(0, 0, 0, 0.8); transform: scale(1.1); }
+.product-image .btn-save-toggle.saved { background-color: var(--secondary-color); color: var(--bg-dark); }
+.product-image .btn-save-toggle.saved:hover { background-color: #e9b914; }
+
+/* --- Продукт Маалыматы (Солго тегизделген) --- */
+.product-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    text-align: left; /* Сол жакка тегиздөө */
+}
+.product-info h3 {
+    font-size: 1.1em; font-weight: 600; margin-bottom: 5px; min-height: auto;
+}
+.product-info h3 a { color: var(--text-light); }
+.product-info h3 a:hover { color: var(--primary-color); }
+.rating { font-size: 0.85em; color: var(--text-secondary); margin-bottom: 8px; order: 1;} /* Баадан мурун */
+.rating .fa-star { color: var(--secondary-color); margin-right: 2px; font-size: 0.9em; }
+.rating .far.fa-star { color: #555; }
+.rating span { color: var(--text-secondary); font-weight: 500; margin-left: 4px; }
+.price { font-size: 1.25em; font-weight: 700; color: var(--primary-color); margin-bottom: 15px; margin-top: 0; order: 2;} /* Рейтингден кийин */
+.btn-add-to-cart { width: 100%; margin-top: auto; padding: 10px 15px; font-size: 0.9em; order: 3;} /* Эң аягында */
+/* ==================== Товарлар сеткасынын АЯГЫ ==================== */
+
+
+/* ==================== Товардын деталдуу барагы ==================== */
+.product-detail-container { display: flex; gap: 40px; margin-bottom: 50px; }
+.product-detail-image { flex-basis: 45%; position: relative; overflow: hidden; border-radius: 8px; background-color: var(--image-bg-color);} /* Фон кошуу */
+.product-detail-image img { display: block; width: 100%; height: auto; max-width: 100%; /* object-fit: contain; */ } /* Бул жерде cover кала бергени жакшыраак болушу мүмкүн */
+.product-detail-info { flex-basis: 55%; }
+.product-detail-info h1 { font-size: 2.8em; margin-bottom: 15px; border: none; text-align: left; transform: none; left: auto; display: block; padding-bottom: 0; }
+.detail-rating { margin-bottom: 20px; font-size: 1.1em; }
+.detail-price { font-size: 2.5em; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; }
+.description { margin-bottom: 30px; border-top: 1px solid var(--border-color); padding-top: 25px; }
+.description h4 { margin-bottom: 10px; font-size: 1.3em; color: var(--text-light); }
+.description p { color: var(--text-secondary); line-height: 1.8; }
+.detail-actions { display: flex; gap: 20px; align-items: center; margin-top: 30px; flex-wrap: wrap; }
+.detail-actions .btn-lg { padding: 14px 30px; font-size: 1.1em; }
+.detail-actions .btn-save-toggle { padding: 14px 25px; font-size: 1em; display: inline-flex; align-items: center; gap: 8px; }
+.discount-badge.detail-discount { font-size: 1em; padding: 6px 12px; top: 20px; left: 20px; position: absolute; z-index: 2;}
+.related-products { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border-color); }
+.related-products h2 { text-align: center; margin-bottom: 40px; font-size: 1.8em; }
+
+/* ==================== Подвал (Footer) ==================== */
+.site-footer { background-color: var(--bg-card); color: var(--text-secondary); padding: 60px 0 30px; margin-top: 60px; border-top: 3px solid var(--primary-color); }
+.footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+.footer-section h4 { color: var(--text-light); margin-bottom: 25px; font-size: 1.3em; position: relative; padding-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.footer-section h4::after { content: ''; position: absolute; bottom: 0; left: 0; width: 50px; height: 3px; background-color: var(--primary-color); }
+.footer-section ul li { margin-bottom: 12px; }
+.footer-section ul li a { color: var(--text-secondary); position: relative; padding-left: 0; transition: color 0.3s ease, padding-left 0.3s ease; }
+.footer-section ul li a:hover { color: var(--text-light); padding-left: 10px; }
+.footer-section ul li a:hover::before { content: '\f0da'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: -5px; top: 1px; color: var(--primary-color); font-size: 0.8em; }
+.subscribe-section p { margin-bottom: 15px; }
+.subscribe-form { display: flex; margin-top: 15px; position: relative; }
+.subscribe-form input[type="email"] { flex-grow: 1; padding: 12px 15px; border: 1px solid var(--border-color); background-color: #333; color: var(--text-light); border-radius: 5px 0 0 5px; outline: none; font-size: 0.95em; }
+.subscribe-form input[type="email"]::placeholder { color: #888; }
+.subscribe-form input[type="email"]:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(106, 176, 76, 0.2); position: relative; z-index: 2; }
+.subscribe-form button { padding: 12px 20px; border-radius: 0 5px 5px 0; white-space: nowrap; margin-left: -1px; z-index: 1; }
+.get-in-touch p { margin-bottom: 12px; display: flex; align-items: flex-start; }
+.get-in-touch p i { margin-right: 12px; color: var(--primary-color); width: 20px; text-align: center; font-size: 1.1em; margin-top: 3px; }
+.social-icons { margin-top: 25px; display: flex; gap: 15px; flex-wrap: wrap; }
+.social-icons a { color: var(--text-secondary); font-size: 1.6em; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); border-radius: 50%; transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease; }
+.social-icons a:hover { color: #fff; background-color: var(--primary-color); border-color: var(--primary-color); transform: translateY(-3px) scale(1.05); }
+.footer-bottom { text-align: center; margin-top: 50px; padding-top: 25px; border-top: 1px solid var(--border-color); font-size: 0.9em; color: #888; }
+.footer-bottom a { color: var(--text-secondary); }
+.footer-bottom a:hover { color: var(--text-light); }
+
+/* ==================== Башка Барактар (Контакт, Блог ж.б.) ==================== */
+.contact-container { display: flex; gap: 40px; margin-top: 30px; }
+.contact-form-section { flex-basis: 60%; }
+.contact-info-section { flex-basis: 40%; background: var(--bg-card); padding: 35px; border-radius: 8px; }
+.contact-info-section h4 { margin-top: 20px; margin-bottom: 10px; color: var(--secondary-color); font-size: 1.1em; }
+.contact-info-section h4:first-child { margin-top: 0; }
+.contact-info-section p { margin-bottom: 15px; }
+.contact-info-section p i { font-size: 1em; margin-top: 1px; }
+.contact-info-section .social-icons { margin-top: 25px; justify-content: flex-start; }
+
+.blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+.blog-card { background-color: var(--bg-card); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.blog-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); }
+.blog-card-image img { height: 200px; width: 100%; object-fit: cover; display: block;}
+.blog-card-content { padding: 25px; }
+.blog-card-content h3 { margin-bottom: 10px; font-size: 1.4em; }
+.blog-card-content h3 a { color: var(--text-light); }
+.blog-card-content h3 a:hover { color: var(--primary-color); }
+.blog-meta { font-size: 0.85em; color: var(--text-secondary); margin-bottom: 15px; }
+.blog-meta i { margin-right: 5px; color: var(--primary-color); }
+.blog-excerpt { color: var(--text-secondary); margin-bottom: 20px; }
+.blog-card .btn { font-size: 0.9em; padding: 10px 20px; }
+
+.blog-detail-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 25px auto; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+.blog-detail-content h2, .blog-detail-content h3 { margin-top: 1.5em; margin-bottom: 0.7em; }
+.blog-detail-content p { margin-bottom: 1.2em; line-height: 1.8; }
+.blog-detail-content ul, .blog-detail-content ol { margin: 0 0 1.5em 2em; }
+.blog-detail-content li { margin-bottom: 0.5em; }
+.blog-detail-content blockquote { border-left: 4px solid var(--primary-color); margin: 1.5em 0; padding: 10px 20px; background-color: var(--bg-card); color: var(--text-secondary); font-style: italic; }
+.blog-sidebar .sidebar { padding-top: 0; }
+.blog-sidebar h4 { font-size: 1.2em; color: var(--secondary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;}
+.recent-posts li { margin-bottom: 10px; }
+.recent-posts li a { font-size: 0.95em; color: var(--text-secondary); }
+.recent-posts li a:hover { color: var(--text-light); }
+
+/* ==================== Django Messages ==================== */
+.messages { position: fixed; top: calc(var(--header-height) + 15px); left: 50%; transform: translateX(-50%); z-index: 1050; width: 90%; max-width: 600px; }
+.alert { padding: 15px 20px; margin-bottom: 15px; border: 1px solid transparent; border-radius: 5px; position: relative; opacity: 0.97; box-shadow: 0 3px 8px rgba(0,0,0,0.2); font-size: 0.95em; display: flex; justify-content: space-between; align-items: center; }
+.alert-success { color: #e6ffed; background-color: var(--success-color); border-color: #25a25a; }
+.alert-info { color: #eaf5fc; background-color: var(--info-color); border-color: #2a80b9; }
+.alert-warning { color: #1a1a1a; background-color: var(--secondary-color); border-color: #e9b914; }
+.alert-error { color: #fdedee; background-color: var(--danger-color); border-color: #c0392b; }
+.alert .close { font-size: 1.4rem; font-weight: bold; line-height: 1; color: inherit; opacity: 0.7; background: none; border: none; cursor: pointer; padding: 0 0 0 15px; }
+.alert .close:hover { opacity: 1; }
+
+/* ==================== Адаптация (Responsiveness) ==================== */
+@media (max-width: 992px) {
+    h1 { font-size: 2.2em; } h2 { font-size: 1.8em; }
+    .main-wrapper { flex-direction: column; }
+    .sidebar { width: 100%; margin-bottom: 30px; }
+    .product-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+    .product-card .product-image { height: 180px; } /* Планшетте сүрөт бийиктиги */
+    .product-detail-container { gap: 30px; }
+    .product-detail-info h1 { font-size: 2.4em; } .detail-price { font-size: 2.2em; }
+    .footer-container { gap: 30px; }
+}
+
+@media (max-width: 768px) {
+    body { font-size: 15px; } h1 { font-size: 2em; } .container { padding: 0 15px; }
+    .header-container { position: relative; }
+    .main-navigation { display: none; position: absolute; top: 100%; left: 0; width: 100%; background-color: var(--bg-card); border-top: 1px solid var(--border-color); box-shadow: 0 5px 10px rgba(0,0,0,0.2); }
+    .main-navigation.is-open { display: block; } /* JS менен ачылат */
+    .main-navigation ul { flex-direction: column; padding: 15px 0; gap: 0; }
+    .main-navigation li { width: 100%; }
+    .main-navigation a { display: block; padding: 12px 20px; border-bottom: 1px solid var(--border-color); }
+    .main-navigation li:last-child a { border-bottom: none; }
+    .main-navigation a::after { display: none; }
+    .main-navigation li.active-nav > a { background-color: #3a3a3a; }
+    /* Мобилдик dropdown */
+    .dropdown-menu { position: static; display: block; background-color: #333; border: none; box-shadow: none; padding-left: 30px; }
+    .nav-item.dropdown > a { display: flex; justify-content: space-between; align-items: center; }
+    .nav-item.dropdown > a::after { content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-left: auto; padding-left: 10px; transition: transform 0.3s ease; }
+    .nav-item.dropdown:not(.is-open) .dropdown-menu { display: none; } /* JS менен ачылат */
+    .nav-item.dropdown.is-open > a::after { transform: rotate(180deg); }
+
+    .header-right .contact-number { display: none; }
+    .header-right .btn-primary { padding: 10px 15px; font-size: 0.9em; }
+    .header-right { gap: 15px; }
+    .auth-links span { display: none; }
+    .menu-toggle { display: block; }
+
+    .product-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .product-card:hover { transform: none; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); }
+    .product-card .product-image { height: 180px; } /* Мобилдикте сүрөт бийиктиги кичирээк (contain үчүн) */
+    .product-card .product-image img { max-height: 100%; max-width: 100%; }
+
+    .product-detail-container { flex-direction: column; }
+    .product-detail-info h1 { font-size: 2.2em; } .detail-price { font-size: 2em; }
+
+    .footer-container { grid-template-columns: 1fr; text-align: center; }
+    .footer-section h4::after { left: 50%; transform: translateX(-50%); }
+    .get-in-touch p { justify-content: center; }
+    .social-icons { justify-content: center; }
+    .subscribe-form { flex-direction: column; gap: 10px; align-items: center; }
+    .subscribe-form input[type="email"],
+    .subscribe-form button { width: 90%; max-width: 350px; border-radius: 5px; margin-left: 0; }
+    .contact-container { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+    body { font-size: 14px; } h1 { font-size: 1.8em; } .logo { font-size: 1.6em; }
+    .btn { padding: 10px 20px; font-size: 0.9em; }
+    .header-right .btn-primary { padding: 8px 12px; }
+    .product-grid { grid-template-columns: 1fr; }
+    .product-card { margin-bottom: 20px; }
+    .product-card .product-image { height: 160px; } /* Эң кичине экранда дагы кичирейтебиз (contain үчүн) */
+
+    .detail-actions { flex-direction: column; align-items: stretch; }
+    .detail-actions .btn { width: 100%; }
+    .messages { width: 95%; top: calc(var(--header-height) + 10px); }
+    .alert { padding: 12px 15px; font-size: 0.9em; }
+}

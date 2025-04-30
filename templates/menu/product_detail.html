@@ -1,0 +1,205 @@
+{# menu/templates/menu/product_detail.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ product.name }}{% endblock %} {# Аталышы модельден #}
+
+{% block main_wrapper_class %}no-sidebar{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_class %}full-width{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <div class="product-detail-image">
+        <img src="{{ product.get_image_url }}" alt="{{ product.name }}">
+         {% if product.discount_message %} <span class="discount-badge detail-discount">{{ product.discount_message }}</span>
+        {% elif product.has_discount %} <span class="discount-badge detail-discount">{{ product.discount_percentage }}% OFF</span> {% endif %}
+    </div>
+
+    <div class="product-detail-info">
+        <h1>{{ product.name }}</h1>
+        {# Орточо рейтингди кошо көрсөтүү #}
+        <div class="rating detail-rating">
+             {% if average_rating %}
+                 {% widthratio average_rating 1 20 as width_percent %} {# 5*20=100% #}
+                 <span style="display: inline-block; position: relative; font-size: 1.2em;">
+                    <span style="color: #555;">★★★★★</span>
+                    <span style="position: absolute; top: 0; left: 0; white-space: nowrap; overflow: hidden; width: {{ width_percent }}%; color: var(--secondary-color);">★★★★★</span>
+                 </span>
+                 <span style="margin-left: 10px;">({{ average_rating|floatformat:1 }})</span>
+             {% else %}
+               
+             {% endif %}
+        </div>
+
+        <p class="detail-price">{{ product.price|floatformat:2 }} {% translate "сом" %}</p> {# Сомго өзгөртүү #}
+
+        {% if product.description %}
+            <div class="description"> <h4>{% translate "Сүрөттөмө:" %}</h4> <p>{{ product.description|linebreaks }}</p> </div>
+        {% endif %}
+
+         <div class="detail-actions">
+             <form action="{% url 'menu:add_to_cart' product.id %}" method="post" style="display: inline-block;">
+                 {% csrf_token %} <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-shopping-cart"></i> {% translate "Буюртма берүү" %}</button>
+             </form>
+             {% if user.is_authenticated %}
+             <button class="btn btn-secondary btn-save-toggle {% if is_saved %}saved{% endif %}" data-product-id="{{ product.pk }}" data-action="{% if is_saved %}unsave{% else %}save{% endif %}">
+                 <i class="{% if is_saved %}fas fa-bookmark{% else %}far fa-bookmark{% endif %}"></i> <span class="save-text">{% if is_saved %}{% translate 'Сакталды' %}{% else %}{% translate 'Сактоо' %}{% endif %}</span>
+             </button>
+             {% else %} <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-secondary" title="{% translate 'Сактоо үчүн кириңиз' %}"> <i class="far fa-bookmark"></i> {% translate 'Сактоо' %} </a> {% endif %}
+         </div>
+    </div>
+</div>
+
+{# ----- ПИКИРЛЕР БӨЛҮМҮ ----- #}
+<section id="reviews" class="product-reviews" style="margin-top: 50px; padding-top: 30px; border-top: 1px solid var(--border-color);">
+    <h2>{% translate "Пикирлер" %} <span style="font-size: 0.7em; color: var(--text-secondary); font-weight: normal;">({{ product_reviews.count }})</span></h2>
+
+    {# Пикирлердин тизмеси #}
+    {% if product_reviews %}
+        <div class="review-list" style="margin-bottom: 40px;">
+            {% for review in product_reviews %}
+                <div class="review-item" style="border-bottom: 1px dashed var(--border-color); padding: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <span style="font-weight: bold; color: var(--text-light);">{{ review.get_author_name }}</span>
+                        {# Рейтинг (эгер бар болсо) #}
+                        {% if review.rating %}
+                        <div class="rating" style="color: var(--secondary-color); font-size: 0.9em;">
+                             {% widthratio review.rating 1 20 as width_percent %}
+                             <span style="display: inline-block; position: relative;">
+                                <span style="color: #555;">★★★★★</span>
+                                <span style="position: absolute; top: 0; left: 0; white-space: nowrap; overflow: hidden; width: {{ width_percent }}%; color: var(--secondary-color);">★★★★★</span>
+                             </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <p style="margin-bottom: 8px; color: var(--text-light);">{{ review.text|linebreaksbr }}</p>
+                    <small style="color: var(--text-secondary);">{{ review.created_at|date:"d F Y, H:i" }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: var(--text-secondary); margin-bottom: 30px;">{% translate "Бул товарга азырынча пикир калтырыла элек. Биринчи болуңуз!" %}</p>
+    {% endif %}
+
+    {# Пикир калтыруу формасы #}
+    <div id="review-form" class="add-review-form" style="margin-top: 30px; padding: 30px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--bg-card);">
+        <h3>{% translate "Пикириңизди калтырыңыз" %}</h3>
+        {% if review_form %}
+            <form action="{% url 'menu:add_review' %}" method="post" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+
+                {# Жалпы форма каталары #}
+                {% if review_form.non_field_errors %}
+                    <div class="alert alert-error">{{ review_form.non_field_errors|striptags }}</div>
+                {% endif %}
+
+                {# Колдонуучу кирбесе, атын суроо #}
+                {% if not user.is_authenticated and review_form.author_name %}
+                   <div class="form-group">
+                        <label for="{{ review_form.author_name.id_for_label }}">{{ review_form.author_name.label }}*</label>
+                        {{ review_form.author_name }}
+                        {% if review_form.author_name.errors %} <div class="form-error">{{ review_form.author_name.errors|striptags }}</div> {% endif %}
+                        {% if review_form.author_name.help_text %} <small style="color: var(--text-secondary); display: block; margin-top: 5px;">{{ review_form.author_name.help_text|safe }}</small>{% endif %}
+                   </div>
+                {% endif %}
+
+                {# Рейтинг талаасы (жылдызча) #}
+                 {% if review_form.rating %}
+                 <div class="form-group star-rating-input">
+                     <label>{{ review_form.rating.label }}</label>
+                     <div class="stars">
+                        {# Радио баскычтарды тескери тартипте чыгаруу (CSS менен оңой стилдеш үчүн) #}
+                        {% for radio in review_form.rating %}
+                         <input type="radio" name="{{ radio.name }}" id="{{ radio.id_for_label }}" value="{{ radio.choice_label|slice:':1' }}" {% if radio.is_checked %}checked{% endif %}>
+                         <label for="{{ radio.id_for_label }}" class="star">★</label>
+                        {% endfor %}
+                     </div>
+                      {% if review_form.rating.errors %} <div class="form-error">{{ review_form.rating.errors|striptags }}</div> {% endif %}
+                 </div>
+                 {# Жылдызча үчүн CSS (бул жерде же негизги CSSте) #}
+                 <style>
+                     .star-rating-input .stars { display: inline-flex; flex-direction: row-reverse; justify-content: flex-end; }
+                     .star-rating-input input[type="radio"] { display: none; }
+                     .star-rating-input label.star { color: #555; cursor: pointer; font-size: 1.8em; padding: 0 2px; transition: color 0.2s ease; }
+                     /* Ховер эффекттери */
+                     .star-rating-input .stars:not(:hover) input[type="radio"]:checked ~ label.star { color: var(--secondary-color); } /* Тандалган жылдыз */
+                     .star-rating-input .stars:hover label.star { color: var(--secondary-color); } /* Ховердеги бардык жылдыздар */
+                     .star-rating-input .stars label.star:hover ~ label.star { color: #555; } /* Ховердеги оң жактагылар кайра боз */
+                 </style>
+                 {% endif %}
+
+                {# Пикир тексти талаасы #}
+                <div class="form-group">
+                    <label for="{{ review_form.text.id_for_label }}">{{ review_form.text.label }}*</label>
+                    {{ review_form.text }}
+                     {% if review_form.text.errors %} <div class="form-error">{{ review_form.text.errors|striptags }}</div> {% endif %}
+                     {% if review_form.text.help_text %} <small style="color: var(--text-secondary); display: block; margin-top: 5px;">{{ review_form.text.help_text|safe }}</small>{% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">{% translate "Пикирди жөнөтүү" %}</button>
+            </form>
+        {% else %}
+             {# Колдонуучу пикир калтыра албаса (мис. форма жок болсо же кирбесе) #}
+             <p>{% translate "Пикир калтыруу үчүн сайтка киришиңиз керек болушу мүмкүн." %}</p>
+             {# {% if not user.is_authenticated %} <a href="{% url 'login' %}?next={{ request.path }}#review-form">{% translate "Кирүү" %}</a> {% endif %} #}
+        {% endif %}
+    </div>
+</section>
+{# ----- Пикирлер Бөлүмүнүн Аягы ----- #}
+
+{# ... (Окшош товарлар) ... #}
+ {% if related_products %}
+ <section class="related-products">
+        <h2>{% translate "Окшош товарлар" %}</h2>
+        <div class="product-grid">
+            {% for related_product in related_products %}
+                {% include 'menu/includes/_product_card.html' with product=related_product user=request.user %}
+            {% endfor %}
+        </div>
+    </section>
+ {% endif %}
+
+{% endblock %}
+
+{# Бул жерде Сактоо үчүн AJAX скрипти кала берет #}
+{% block extra_scripts %}
+    <script>
+    $(document).ready(function() {
+        // Сактоо кнопкасы үчүн listener (event delegation менен жакшыраак)
+        $('.btn-save-toggle').on('click', function(e) {
+            if (!$(this).closest('form').length) { e.preventDefault(); }
+            var button = $(this);
+            var productId = button.data('product-id');
+            var action = button.data('action');
+            var url = window.toggleSaveUrl;
+            var csrfToken = window.csrfToken; // base.html'ден алуу
+
+            // Кнопканы өчүрүү
+            button.prop('disabled', true);
+
+            $.ajax({
+                url: url, method: 'POST', data: { 'product_id': productId, 'action': action, 'csrfmiddlewaretoken': csrfToken }, dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'ok') {
+                        var icon = button.find('i'); var saveTextSpan = button.find('.save-text');
+                        if (response.saved) {
+                            button.addClass('saved').data('action', 'unsave'); button.attr('title', window.jsTranslations.removeSaved);
+                            if (icon.length) icon.removeClass('far').addClass('fas');
+                            if (saveTextSpan.length) saveTextSpan.text(window.jsTranslations.saved);
+                        } else {
+                            button.removeClass('saved').data('action', 'save'); button.attr('title', window.jsTranslations.save);
+                            if (icon.length) icon.removeClass('fas').addClass('far');
+                            if (saveTextSpan.length) saveTextSpan.text(window.jsTranslations.save);
+                        }
+                    } else { alert(window.jsTranslations.errorOccurred + " " + response.message); }
+                },
+                error: function(xhr, status, error) { console.error("AJAX Error:", status, error); alert(window.jsTranslations.operationError); },
+                complete: function() { button.prop('disabled', false); } // Кнопканы кайра иштетүү
+            });
+        });
+    });
+    </script>
+{% endblock %}

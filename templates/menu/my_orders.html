@@ -1,0 +1,68 @@
+{# menu/templates/menu/my_orders.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load l10n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block sidebar %}
+    {% include 'menu/includes/_sidebar.html' %}
+{% endblock sidebar %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    {% if orders %}
+        <div class="orders-list" style="margin-top: 20px; overflow-x: auto;"> {# Горизонталдуу сыдыруу үчүн #}
+            <table class="orders-table" style="width: 100%; min-width: 600px; border-collapse: collapse;"> {# Минималдуу туура #}
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th style="text-align: left; padding: 10px 5px;">{% translate "Заказ №" %}</th>
+                        <th style="text-align: left; padding: 10px 5px;">{% translate "Датасы" %}</th>
+                        <th style="text-align: right; padding: 10px 5px;">{% translate "Жалпы Сумма" %}</th>
+                        <th style="text-align: center; padding: 10px 5px;">{% translate "Статус" %}</th>
+                        <th style="text-align: center; padding: 10px 5px;">{% translate "Аракеттер" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 15px 5px; font-weight: bold;">#{{ order.id }}</td>
+                        <td style="padding: 15px 5px; white-space: nowrap;">{{ order.created_at|date:"d M Y, H:i" }}</td>
+                        <td style="text-align: right; padding: 15px 5px;">${{ order.get_total_cost|floatformat:2 }}</td>
+                        <td style="text-align: center; padding: 15px 5px;">
+                            <span class="status-badge status-{{ order.status|lower }}"
+                                  style="padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 500; color: #fff; white-space: nowrap;">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td style="text-align: center; padding: 15px 5px;">
+                            {# ----- "Көрүү" шилтемеси order.id менен ----- #}
+                            <a href="{% url 'menu:order_detail' order.id %}" class="btn btn-sm btn-secondary" style="font-size: 0.8em; padding: 5px 10px; white-space: nowrap;">
+                                <i class="fas fa-eye"></i> {% translate "Көрүү" %}
+                            </a>
+                            {# ------------------------------------------ #}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p style="margin-top: 30px;">{% translate "Сизде азырынча эч кандай заказ жок." %}</p>
+        <p><a href="{% url 'menu:menu_list' %}" class="btn">{% translate "Менюну көрүү" %}</a></p>
+    {% endif %}
+
+{% endblock content %}
+
+{% block extra_head %}
+<style>
+    .status-badge { background-color: #777; display: inline-block; }
+    .status-pending { background-color: #f39c12; }
+    .status-processing { background-color: var(--info-color); }
+    .status-shipped { background-color: #8e44ad; }
+    .status-delivered { background-color: var(--success-color); }
+    .status-cancelled { background-color: var(--danger-color); }
+</style>
+{% endblock %}

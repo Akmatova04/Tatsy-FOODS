@@ -1,0 +1,70 @@
+{# menu/templates/menu/testimonial_list.html #}
+{% extends 'menu/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block main_wrapper_class %}no-sidebar{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content_class %}full-width{% endblock %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    {# Пикирлердин тизмеси #}
+    {% if reviews %}
+        <div class="review-list" style="margin-top: 30px; max-width: 800px; margin-left: auto; margin-right: auto;">
+            {% for review in reviews %}
+                <div class="review-item" style="border-bottom: 1px solid var(--border-color); padding: 25px 0; margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <span style="font-weight: bold; color: var(--text-light); font-size: 1.1em;">{{ review.get_author_name }}</span>
+                        {% if review.rating %}
+                        <div class="rating" style="color: var(--secondary-color); font-size: 1em;">
+                             {% widthratio review.rating 1 20 as width_percent %}
+                             <span style="display: inline-block; position: relative;">
+                                <span style="color: #555;">★★★★★</span>
+                                <span style="position: absolute; top: 0; left: 0; white-space: nowrap; overflow: hidden; width: {{ width_percent }}%; color: var(--secondary-color);">★★★★★</span>
+                             </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {# Эгер товарга тиешелүү болсо, товардын атын көрсөтүү #}
+                    {% if review.product %}
+                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 10px;">
+                            {% blocktranslate with product_name=review.product.name %}Пикир калтырылды: {{ product_name }}{% endblocktranslate %}
+                        </p>
+                    {% endif %}
+                    <blockquote style="border: none; padding: 0; margin: 0 0 10px 0;">
+                         <p style="margin: 0; color: var(--text-light); line-height: 1.6;">{{ review.text|linebreaksbr }}</p>
+                    </blockquote>
+                    <small style="color: var(--text-secondary);">{{ review.created_at|date:"d F Y" }}</small>
+                </div>
+            {% endfor %}
+        </div>
+        {# Пагинация бул жерге кошулса болот #}
+    {% else %}
+        <p style="text-align: center; padding: 50px 0;">{% translate "Азырынча эч ким пикир калтыра элек." %}</p>
+    {% endif %}
+
+    {# Пикир калтыруу формасын бул жерде да көрсөтсө болот (эгер кааласаңыз) #}
+    {#
+    <div class="add-review-form" style="margin-top: 50px; padding-top: 30px; border-top: 1px solid var(--border-color); max-width: 600px; margin-left: auto; margin-right: auto;">
+        <h3>{% translate "Сиз да пикир калтырыңыз" %}</h3>
+        {% if review_form %}
+            <form action="{% url 'menu:add_review' %}" method="post">
+                {% csrf_token %}
+                {% if not user.is_authenticated and review_form.author_name %}
+                   <div class="form-group"> ... {{ review_form.author_name }} ... </div>
+                {% endif %}
+                {% if review_form.rating %}
+                 <div class="form-group star-rating-input"> ... {{ review_form.rating }} ... </div>
+                {% endif %}
+                <div class="form-group"> ... {{ review_form.text }} ... </div>
+                <button type="submit" class="btn btn-primary">{% translate "Пикирди жөнөтүү" %}</button>
+            </form>
+        {% endif %}
+    </div>
+    #}
+
+{% endblock content %}
